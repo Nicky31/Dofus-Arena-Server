@@ -9,7 +9,10 @@ SOURCES += \
     game/Configs/AuthConfig.cpp \
     core/Logs/Log.cpp \
     game/World/World.cpp \
-    game/Com/Handlers/LoginHandler.cpp
+    game/Com/Handlers/LoginHandler.cpp \
+    core/Databases/DatabaseConnection.cpp \
+    game/DAO/DAOFactory.cpp \
+    game/Com/Handlers/CoachHandler.cpp
 
 HEADERS += \
     core/Network/Server/TCPServer.h \
@@ -22,7 +25,15 @@ HEADERS += \
     game/Configs/AuthConfig.h \
     game/Configs/Configs.h \
     core/Logs/Log.h \
-    game/World/World.h
+    game/World/World.h \
+    game/World/Entities/Account.h \
+    game/World/Managers/Account/AccountMgr.h \
+    core/Utils/Observer.h \
+    core/Databases/DatabaseConnection.h \
+    game/DAO/AccountDAO.h \
+    game/DAO/DAOFactory.h \
+    game/World/Entities/Coach.h \
+    game/DAO/CoachDAO.h
 
 QT += core network sql
 QT -= gui

@@ -4,9 +4,8 @@
 
 using namespace std;
 
-void exit(int)
+void exit(int s)
 {
-    World::Close();
     QCoreApplication::exit(0);
 }
 
@@ -14,13 +13,12 @@ int main(int argc, char* argv[])
 {
     QCoreApplication ap(argc, argv);
 
-    signal(SIGABRT, exit);
     signal(SIGTERM, exit);
-    signal(SIGINT, exit);
+    signal(SIGINT, exit); // ctrl + c
+    signal(SIGHUP, exit); // Fermeture de la fenêtre, checker sous windows
 
     World world;
     if(!world.Initialize())
         return false;
-
     return ap.exec();
 }

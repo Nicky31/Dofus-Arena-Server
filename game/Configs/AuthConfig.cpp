@@ -32,6 +32,7 @@ void AuthConfig::GenerateDefaultSettings(QSettings &settings)
     SET("CLIENT_VERSION", "2.6");
     SET("SERVER_IP",      "127.0.0.1");
     SET("SERVER_PORT",    "5555");
+    SET("DYN_DB",         "127.0.0.1:root::darena_dyn:3306")
 
 #undef SET
 }

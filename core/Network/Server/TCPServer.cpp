@@ -2,13 +2,20 @@
 
 TCPServer::TCPServer()
 {
-    m_server = new QTcpServer(this);
+    m_server = new QTcpServer();
 }
 
 TCPServer::~TCPServer()
 {
+    delete m_server;
+
     qDeleteAll(m_clients);
     m_clients.clear();
+}
+
+QTcpServer* TCPServer::GetServer() const
+{
+    return m_server;
 }
 
 bool TCPServer::StartOn(QString ip, quint16 port)
@@ -27,12 +34,14 @@ bool TCPServer::StartOn(QString ip, quint16 port)
 
 void TCPServer::OnConnect()
 {
+    Notify();
+    /*
     ClientSession* newClient = new ClientSession(m_server->nextPendingConnection());
     m_clients.append(newClient);
 
     Log::Instance()->Write(DETAIL_LOG, "Nouvelle connexion de " + newClient->GetIp());
 
-    QObject::connect(newClient, SIGNAL(Disconnected()), this, SLOT(OnDisconnection()));
+    QObject::connect(newClient, SIGNAL(Disconnected()), this, SLOT(OnDisconnection()));*/
 }
 
 void TCPServer::OnDisconnection()

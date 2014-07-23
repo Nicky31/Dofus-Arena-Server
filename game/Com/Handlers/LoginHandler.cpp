@@ -1,5 +1,12 @@
 #include "game/Com/Session/ClientSession.h"
 
+// préférons les define étant donné que ces valeurs n'ont pas besoin d'être utilisé autre part
+#define SUCCESS        0
+#define BAD_LOGINS     2
+#define ALREADY_LOGGED 3
+#define CURRENTLY_SAVE 4
+#define CLOSED_BETA    127
+
 void ClientSession::HandleClientVersion(QByteArray datas)
 {
     quint8 version = ExtractNum<quint8>(datas);
@@ -21,34 +28,47 @@ void ClientSession::HandleAuthentification(QByteArray datas)
     quint8 size = ExtractNum<quint8>(datas);
 
     account = datas.left(size);
-
     datas.remove(0, size);
     size = ExtractNum<quint8>(datas);
-
     password = datas.left(size);
 
-    // Premier octet : 0 pour réussite, le reste pour erreurs :
-    // 2 = badlogin / 3 = already connected / 4 = sauvegarde en cours / 127 = beta fermée
-    DAPacket authResult(SMSG_AUTHENTIFICATION_RESULT);
+    m_account = DAOFactory::GetAccountDAO()->Get(account, password);
 
-    if(account == "nomdecompte" && password == "motdepasse")
-    {
-        authResult << (quint8)0;
-        m_infos.account = account;
-        m_infos.password = password;
-        m_infos.authentified = true;
-    }
+    DAPacket authResult(SMSG_AUTHENTIFICATION_RESULT);
+    if(m_account != 0)
+        if(m_account->online)
+        {
+            authResult << (quint8)ALREADY_LOGGED;
+            m_authentified = false;
+        }
+        else
+        {
+            authResult << (quint8)SUCCESS;
+            m_account->online = m_authentified = true;
+            DAOFactory::GetAccountDAO()->Update(m_account);
+        }
     else
     {
-        authResult << (quint8)2;
-        m_infos.authentified = false;
+        authResult << (quint8)BAD_LOGINS;
+        m_authentified = false;
     }
 
     SendPacket(authResult);
+    if(!m_authentified)
+        m_socket->disconnectFromHost();
+    else
+    {
+        if(m_account->coach_id == -1)
+            RequestCoachCreation();
+        else
+        {
+            m_account->coach = DAOFactory::GetCoachDAO()->Get(m_account->coach_id);
+        }
+    }
 }
 
-void ClientSession::RequestCoachCreation()
+void ClientSession::SendQueuePosition()
 {
-    DAPacket request(SMSG_COACH_CREATION_REQUEST);
-    SendPacket(request);
+    DAPacket packet(SMSG_QUEUE_POS);
+    SendPacket(packet);
 }
