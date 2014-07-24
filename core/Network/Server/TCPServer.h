@@ -3,14 +3,11 @@
 
 #include <QtCore>
 #include <QtNetwork>
-#include <QList>
-#include <iostream>
+#include "core/Logs/Log.h"
 #include <cassert>
-#include "game/Com/Session/ClientSession.h"
 #include "core/Utils/Observer.h"
 
 using namespace std;
-class ClientSession;
 
 class TCPServer : public QObject, public Observable
 {
@@ -20,17 +17,14 @@ public:
     TCPServer();
     ~TCPServer();
     bool StartOn(QString ip, quint16 port);
-    void RemoveSocket(ClientSession* socket);
 
     QTcpServer* GetServer() const;
 
 public slots:
     void OnConnect();
-    void OnDisconnection();
 
 private:
     QTcpServer* m_server;
-    QList<ClientSession*> m_clients;
 
 };
 

@@ -12,7 +12,27 @@ public:
 
     Coach* Get(int id)
     {
-        return 0;
+        QSqlQuery query;
+        try
+        {
+            query = m_connection->PQuery("SELECT * FROM `coachs` WHERE `id` = ?",
+                                         QVariantList() << id);
+        } catch(std::runtime_error err)
+        {
+            Log::Instance()->Write(ERROR_LOG, err.what());
+            return 0;
+        }
+        if(!query.first())
+            return 0;
+
+        Coach* coach = new Coach;
+        coach->id             = id;
+        coach->name           = VALUE(query, "name").toString();
+        coach->hairColorIndex = VALUE(query, "hairColor").toInt();
+        coach->skinColorIndex = VALUE(query, "skinColor").toInt();
+        coach->sex            = (unsigned char)VALUE(query, "sex").toInt();
+
+        return coach;
     }
 
     int Create(Coach* const coach)

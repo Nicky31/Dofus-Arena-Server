@@ -4,6 +4,7 @@
 #include "core/Network/Server/TCPServer.h"
 #include "game/Configs/Configs.h"
 #include "game/DAO/DAOFactory.h"
+#include "game/Com/Session/ClientSession.h"
 #include <cassert>
 #include <csignal>
 #include <QtCore>

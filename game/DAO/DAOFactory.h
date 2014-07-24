@@ -13,6 +13,8 @@ public:
         // If nécessaire au cas d'un crash au lancement, appellant DAOFactory::Close sans que tous les DAO soient instanciés
         if(accountDAO != 0)
             delete accountDAO;
+        if(coachDAO != 0)
+            delete coachDAO;
     }
 
     static void SetDynDB(DatabaseConnection* dyndb)

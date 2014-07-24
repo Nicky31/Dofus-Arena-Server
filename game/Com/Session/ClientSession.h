@@ -8,6 +8,13 @@
 #include "game/DAO/DAOFactory.h"
 #include "game/World/Managers/Account/AccountMgr.h"
 
+#define AUTHENTIFIED_REGION             \
+    if(!m_authentified)                 \
+    {                                   \
+        m_socket->disconnectFromHost(); \
+        return;                         \
+    }
+
 using namespace std;
 
 class ClientSession : public SocketHandler
@@ -17,15 +24,18 @@ class ClientSession : public SocketHandler
 public:
     ~ClientSession();
     ClientSession(QTcpSocket* socket);
+    Coach* GetCoach() const;
 
     // Handlers
     void HandleClientVersion(QByteArray datas);
     void HandleAuthentification(QByteArray datas);
     void HandleCoachCreation(QByteArray datas);
 
-    // Requests
+    // Server messages
     void RequestCoachCreation();
     void SendQueuePosition(); // Non géré
+    void SendCoachInformations();
+    void EnterInstance();
 
 public slots:
     void OnDisconnection();
@@ -35,6 +45,8 @@ signals:
 
 private:
     virtual void ProcessPacket(quint16 opcode, QByteArray packet);
+
+    bool LoadCoach();
 
     bool m_authentified;
     Account* m_account;

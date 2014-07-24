@@ -9,7 +9,7 @@ struct Coach
     QString name;
     quint8 skinColorIndex;
     quint8 hairColorIndex;
-    unsigned char sex;
+    quint8 sex;
 };
 
 #endif // COACH_H

@@ -54,17 +54,13 @@ void ClientSession::HandleAuthentification(QByteArray datas)
     }
 
     SendPacket(authResult);
-    if(!m_authentified)
-        m_socket->disconnectFromHost();
+
+    AUTHENTIFIED_REGION
+
+    if(!LoadCoach())
+        RequestCoachCreation();
     else
-    {
-        if(m_account->coach_id == -1)
-            RequestCoachCreation();
-        else
-        {
-            m_account->coach = DAOFactory::GetCoachDAO()->Get(m_account->coach_id);
-        }
-    }
+        EnterInstance();
 }
 
 void ClientSession::SendQueuePosition()
