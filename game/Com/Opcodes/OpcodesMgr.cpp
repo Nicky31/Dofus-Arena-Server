@@ -2,16 +2,30 @@
 
 OpcodesList OpcodesMgr::opcodes;
 
-void OpcodesMgr::Load()
+void OpcodesMgr::Add(OpcodeID opcode, OpcodeHandlerPtr ptr, quint8 requirements)
 {
-    opcodes.insert(CMSG_CLIENT_VERSION, &ClientSession::HandleClientVersion);
-    opcodes.insert(CMSG_AUTHENTICATION, &ClientSession::HandleAuthentification);
-    opcodes.insert(CMSG_COACH_CREATION, &ClientSession::HandleCoachCreation);
+    OpcodeHandler handler;
+    handler.ptr = ptr;
+    handler.requirements = requirements;
+
+    opcodes.insert(opcode, handler);
 }
 
-OpcodeHandlerPtr OpcodesMgr::Get(short id)
+void OpcodesMgr::Load()
 {
-    return opcodes.value((OpcodeID)id);
+    Add(CMSG_CLIENT_VERSION, &ClientSession::HandleClientVersion,    NO_ACCOUNT_NEEDED);
+    Add(CMSG_AUTHENTICATION, &ClientSession::HandleAuthentification, NO_ACCOUNT_NEEDED);
+    Add(CMSG_COACH_CREATION, &ClientSession::HandleCoachCreation,    ACCOUNT_NEEDED | NO_COACH_NEEDED);
+}
+
+OpcodeHandlerPtr OpcodesMgr::GetHandler(short id)
+{
+    return opcodes.value((OpcodeID)id).ptr;
+}
+
+quint8 OpcodesMgr::GetRequirements(short id)
+{
+    return opcodes.value((OpcodeID)id).requirements;
 }
 
 bool OpcodesMgr::Exists(short id)

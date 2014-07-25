@@ -34,26 +34,22 @@ void ClientSession::HandleAuthentification(QByteArray datas)
 
     m_account = DAOFactory::GetAccountDAO()->Get(account, password);
 
-    DAPacket authResult(SMSG_AUTHENTIFICATION_RESULT);
-    if(m_account != 0)
-        if(m_account->online)
-        {
-            authResult << (quint8)ALREADY_LOGGED;
-            delete m_account;
-            m_account = 0;
-        }
-        else
-        {
-            authResult << (quint8)SUCCESS;
-            m_account->online = true;
-            DAOFactory::GetAccountDAO()->Update(m_account);
-        }
-    else
-        authResult << (quint8)BAD_LOGINS;
+    if(m_account == 0)
+    {
+        SendPacket(DAPacket(SMSG_AUTHENTIFICATION_RESULT) << (quint8)BAD_LOGINS);
+        return;
+    }
+    if(m_account->online)
+    {
+        SendPacket(DAPacket(SMSG_AUTHENTIFICATION_RESULT) << (quint8)ALREADY_LOGGED);
+        delete m_account;
+        m_account = 0;
+        return;
+    }
 
-    SendPacket(authResult);
-
-    AUTHENTIFIED_REGION
+    SendPacket(DAPacket(SMSG_AUTHENTIFICATION_RESULT) << (quint8)SUCCESS);
+    m_account->online = true;
+    DAOFactory::GetAccountDAO()->Update(m_account);
 
     if(!LoadCoach())
         RequestCoachCreation();

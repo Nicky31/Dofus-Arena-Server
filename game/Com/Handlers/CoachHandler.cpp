@@ -35,11 +35,6 @@ void ClientSession::RequestCoachCreation()
 
 void ClientSession::HandleCoachCreation(QByteArray datas)
 {
-    AUTHENTIFIED_REGION
-
-    if(m_account->coach != 0)
-        return;
-
     quint8 nameSize, skinColorIndex, hairColorIndex, sex;
     QString name;
     DAPacket result(SMSG_COACH_CREATION_RESULT);

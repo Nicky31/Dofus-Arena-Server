@@ -8,13 +8,6 @@
 #include "game/DAO/DAOFactory.h"
 #include "game/World/Managers/Account/AccountMgr.h"
 
-#define AUTHENTIFIED_REGION             \
-    if(m_account == 0)                  \
-    {                                   \
-        m_socket->disconnectFromHost(); \
-        return;                         \
-    }
-
 using namespace std;
 
 class ClientSession : public SocketHandler
@@ -47,6 +40,7 @@ private:
     virtual void ProcessPacket(quint16 opcode, QByteArray packet);
 
     bool LoadCoach();
+    bool Require(quint8 requirement) const;
 
     Account* m_account;
 };

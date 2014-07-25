@@ -5,6 +5,7 @@
 #include "game/Com/Session/ClientSession.h"
 
 class ClientSession;
+typedef void(ClientSession::*OpcodeHandlerPtr)(QByteArray);
 
 enum OpcodeID
 {
@@ -25,14 +26,30 @@ enum OpcodeID
 
 };
 
-typedef void(ClientSession::*OpcodeHandlerPtr)(QByteArray);
-typedef QMap<OpcodeID, OpcodeHandlerPtr> OpcodesList;
+enum OpcodeRequirement
+{
+    NONE              = 0,
+    ACCOUNT_NEEDED    = 1,
+    NO_ACCOUNT_NEEDED = 2,
+    COACH_NEEDED      = 4,
+    NO_COACH_NEEDED   = 8
+};
+
+struct OpcodeHandler
+{
+    OpcodeHandlerPtr ptr;
+    quint8 requirements;
+};
+
+typedef QMap<OpcodeID, OpcodeHandler> OpcodesList;
 
 class OpcodesMgr
 {
 public:
+    static void Add(OpcodeID opcode, OpcodeHandlerPtr ptr, quint8 requirements);
     static void Load();
-    static OpcodeHandlerPtr Get(short id);
+    static OpcodeHandlerPtr GetHandler(short id);
+    static quint8 GetRequirements(short id);
     static bool Exists(short id);
 
 private:
