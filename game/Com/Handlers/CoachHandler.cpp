@@ -71,7 +71,7 @@ void ClientSession::HandleCoachCreation(QByteArray datas)
     newCoach->name = name;
     newCoach->skinColorIndex = skinColorIndex;
     newCoach->hairColorIndex = hairColorIndex;
-    newCoach->sex = (unsigned char)sex;
+    newCoach->sex = sex;
     newCoach->id = DAOFactory::GetCoachDAO()->Create(newCoach);
 
     if(newCoach->id == -1) // Erreur d'insertion || récupération de l'id impossible
@@ -117,19 +117,4 @@ void ClientSession::SendCoachInformations()
             //(quint16)strength
 
     SendPacket(datas);
-}
-
-void ClientSession::EnterInstance()
-{
-    SendCoachInformations();
-
-    DAPacket packet(SMSG_ENTER_INSTANCE);
-    packet << (float)131072; // worldX
-    packet << (float)0; // worldY
-    packet << (quint16)0; // altitude
-    packet << (quint16)0; // instanceID
-    packet << (quint8)0; // dynamic
-    SendPacket(packet);
-
-    SendQueuePosition();
 }

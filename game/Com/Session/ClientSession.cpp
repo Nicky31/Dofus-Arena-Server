@@ -3,22 +3,19 @@
 ClientSession::ClientSession(QTcpSocket *socket) : SocketHandler(socket)
 {
     m_account = 0;
-    m_authentified = false;
     QObject::connect(m_socket, SIGNAL(disconnected()), this, SLOT(OnDisconnection()));
 }
 
 ClientSession::~ClientSession()
 {
     // Sauvegardes ...
-    if(m_authentified)
+    if(m_account != 0)
     {
         m_account->online = false;
         DAOFactory::GetAccountDAO()->Update(m_account);
-    }
 
-    // Account n'est pas forcément instancié, comme dans le cas d'un échec de connexion :
-    if(m_account != 0)
         delete m_account;
+    }
 }
 
 void ClientSession::OnDisconnection()

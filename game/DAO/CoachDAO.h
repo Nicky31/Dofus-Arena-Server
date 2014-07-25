@@ -30,7 +30,7 @@ public:
         coach->name           = VALUE(query, "name").toString();
         coach->hairColorIndex = VALUE(query, "hairColor").toInt();
         coach->skinColorIndex = VALUE(query, "skinColor").toInt();
-        coach->sex            = (unsigned char)VALUE(query, "sex").toInt();
+        coach->sex            = VALUE(query, "sex").toInt();
 
         return coach;
     }

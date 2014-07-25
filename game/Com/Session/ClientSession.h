@@ -9,7 +9,7 @@
 #include "game/World/Managers/Account/AccountMgr.h"
 
 #define AUTHENTIFIED_REGION             \
-    if(!m_authentified)                 \
+    if(m_account == 0)                  \
     {                                   \
         m_socket->disconnectFromHost(); \
         return;                         \
@@ -48,7 +48,6 @@ private:
 
     bool LoadCoach();
 
-    bool m_authentified;
     Account* m_account;
 };
 

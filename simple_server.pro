@@ -12,7 +12,8 @@ SOURCES += \
     game/Com/Handlers/LoginHandler.cpp \
     core/Databases/DatabaseConnection.cpp \
     game/DAO/DAOFactory.cpp \
-    game/Com/Handlers/CoachHandler.cpp
+    game/Com/Handlers/CoachHandler.cpp \
+    game/Com/Handlers/WorldHandler.cpp
 
 HEADERS += \
     core/Network/Server/TCPServer.h \

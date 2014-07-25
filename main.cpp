@@ -15,7 +15,11 @@ int main(int argc, char* argv[])
 
     signal(SIGTERM, exit);
     signal(SIGINT, exit); // ctrl + c
-    signal(SIGHUP, exit); // Fermeture de la fenêtre, checker sous windows
+#ifdef Q_OS_UNIX
+    signal(SIGHUP, exit); // Fermeture de la fenêtre
+#elif defined(Q_OS_WIN)
+    signal(SIGBREAK, exit);
+#endif
 
     World world;
     if(!world.Initialize())

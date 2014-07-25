@@ -39,19 +39,17 @@ void ClientSession::HandleAuthentification(QByteArray datas)
         if(m_account->online)
         {
             authResult << (quint8)ALREADY_LOGGED;
-            m_authentified = false;
+            delete m_account;
+            m_account = 0;
         }
         else
         {
             authResult << (quint8)SUCCESS;
-            m_account->online = m_authentified = true;
+            m_account->online = true;
             DAOFactory::GetAccountDAO()->Update(m_account);
         }
     else
-    {
         authResult << (quint8)BAD_LOGINS;
-        m_authentified = false;
-    }
 
     SendPacket(authResult);
 
